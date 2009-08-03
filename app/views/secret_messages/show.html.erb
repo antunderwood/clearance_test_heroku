@@ -1,0 +1,13 @@
+<p>
+  <b>Title:</b>
+  <%=h @secret_message.title %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%=h @secret_message.description %>
+</p>
+
+
+<%= link_to 'Edit', edit_secret_message_path(@secret_message) %> |
+<%= link_to 'Back', secret_messages_path %>
