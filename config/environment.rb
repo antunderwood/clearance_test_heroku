@@ -47,7 +47,6 @@ config.action_mailer.smtp_settings = {
 :authentication => :plain, 
 :user_name => "email2ants@gmail.com", 
 :password => "shoptrop4610", 
-:tls => :true 
 } 
 config.action_mailer.perform_deliveries = :true 
 config.action_mailer.raise_delivery_errors = :true 
