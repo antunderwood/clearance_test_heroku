@@ -26,3 +26,472 @@ Rendering rescues/layout (internal_server_error)
  FROM sqlite_master
  WHERE type = 'table' AND NOT name = 'sqlite_sequence'
 [0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mselect sqlite_version(*)[0m
+  [4;36;1mSQL (156.0ms)[0m   [0;1mCREATE TABLE "schema_migrations" ("version" varchar(255) NOT NULL) [0m
+  [4;35;1mSQL (94.0ms)[0m   [0mCREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mSELECT version FROM schema_migrations[0m
+Migrating to ClearanceCreateUsers (20090803082457)
+  [4;36;1mSQL (0.0ms)[0m   [0;1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "email" varchar(255), "encrypted_password" varchar(128), "salt" varchar(128), "token" varchar(128), "token_expires_at" datetime, "email_confirmed" boolean DEFAULT 'f' NOT NULL, "created_at" datetime, "updated_at" datetime) [0m
+  [4;35;1mSQL (0.0ms)[0m   [0mCREATE INDEX "index_users_on_id_and_token" ON "users" ("id", "token")[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mCREATE INDEX "index_users_on_email" ON "users" ("email")[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mCREATE INDEX "index_users_on_token" ON "users" ("token")[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('20090803082457')[0m
+Migrating to CreateSecretMessages (20090803082800)
+  [4;35;1mSQL (15.0ms)[0m   [0mCREATE TABLE "secret_messages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar(255), "description" text, "created_at" datetime, "updated_at" datetime) [0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('20090803082800')[0m
+  [4;35;1mSQL (0.0ms)[0m   [0m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;36;1mSQL (16.0ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (0.0ms)[0m   [0m SELECT name
+ FROM sqlite_master
+ WHERE type = 'table' AND NOT name = 'sqlite_sequence'
+[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mPRAGMA index_list("secret_messages")[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mPRAGMA index_list("users")[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mPRAGMA index_info('index_users_on_token')[0m
+  [4;35;1mSQL (0.0ms)[0m   [0mPRAGMA index_info('index_users_on_email')[0m
+  [4;36;1mSQL (0.0ms)[0m   [0;1mPRAGMA index_info('index_users_on_id_and_token')[0m
+
+
+Processing SecretMessagesController#index (for 127.0.0.1 at 2009-08-03 11:35:34) [GET]
+  [4;36;1mSecretMessage Load (32.0ms)[0m   [0;1mSELECT * FROM "secret_messages" [0m
+Rendering template within layouts/secret_messages
+Rendering secret_messages/index
+Completed in 1984ms (View: 1937, DB: 32) | 200 OK [http://127.0.0.1/]
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 11:35:44) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (0.0ms)
+Completed in 63ms (View: 32, DB: 0) | 200 OK [http://127.0.0.1/sign_up]
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 11:36:01) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;35;1mUser Exists (0.0ms)[0m   [0mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+  [4;36;1mUser Create (0.0ms)[0m   [0;1mINSERT INTO "users" ("encrypted_password", "salt", "updated_at", "token", "token_expires_at", "email", "email_confirmed", "created_at") VALUES('c20016b6bab15c364567254132eee9cc430b9e2b', '65fb32190eb1c22e9181591b50fc0f755c447a60', '2009-08-03 10:36:02', '29fde889ccd989b53dcbe9dc062837f33280f675', NULL, 'email2ants@gmail.com', 'f', '2009-08-03 10:36:02')[0m
+Sent mail to email2ants@gmail.com
+
+From: email2ants@gmail.com
+To: email2ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+
+http://127.0.0.1/users/1/confirmation/new?token=29fde889ccd989b53dcbe9dc062837f33280f675
+Redirected to http://127.0.0.1:3000/session/new
+Completed in 60985ms (DB: 0) | 302 Found [http://127.0.0.1/users]
+
+
+Processing Clearance::SessionsController#new (for 127.0.0.1 at 2009-08-03 11:37:02) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/sessions"}
+Rendering sessions/new
+Completed in 47ms (View: 32, DB: 0) | 200 OK [http://127.0.0.1/session/new]
+
+
+Processing Clearance::SessionsController#create (for 127.0.0.1 at 2009-08-03 11:38:17) [POST]
+  Parameters: {"commit"=>"Sign in", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "session"=>{"password"=>"[FILTERED]", "remember_me"=>"0", "email"=>"email2ants@gmail.com"}, "controller"=>"clearance/sessions"}
+  [4;35;1mUser Load (0.0ms)[0m   [0mSELECT * FROM "users" WHERE ("users"."email" = 'email2ants@gmail.com') LIMIT 1[0m
+Sent mail to email2ants@gmail.com
+
+From: email2ants@gmail.com
+To: email2ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+
+http://127.0.0.1/users/1/confirmation/new?token=29fde889ccd989b53dcbe9dc062837f33280f675
+Redirected to http://127.0.0.1:3000/session/new
+Completed in 60125ms (DB: 0) | 302 Found [http://127.0.0.1/session]
+
+
+Processing Clearance::SessionsController#new (for 127.0.0.1 at 2009-08-03 11:39:17) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/sessions"}
+Rendering sessions/new
+Completed in 0ms (View: 0, DB: 0) | 200 OK [http://127.0.0.1/session/new]
+
+
+Processing Clearance::SessionsController#create (for 127.0.0.1 at 2009-08-03 11:39:41) [POST]
+  Parameters: {"commit"=>"Sign in", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "session"=>{"password"=>"[FILTERED]", "remember_me"=>"0", "email"=>"email2ants@gmail.com"}, "controller"=>"clearance/sessions"}
+  [4;36;1mUser Load (16.0ms)[0m   [0;1mSELECT * FROM "users" WHERE ("users"."email" = 'email2ants@gmail.com') LIMIT 1[0m
+Sent mail to email2ants@gmail.com
+
+From: email2ants@gmail.com
+To: email2ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+
+http://127.0.0.1/users/1/confirmation/new?token=29fde889ccd989b53dcbe9dc062837f33280f675
+Redirected to http://127.0.0.1:3000/session/new
+Completed in 60063ms (DB: 16) | 302 Found [http://127.0.0.1/session]
+
+
+Processing Clearance::SessionsController#new (for 127.0.0.1 at 2009-08-03 11:40:41) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/sessions"}
+Rendering sessions/new
+Completed in 0ms (View: 0, DB: 0) | 200 OK [http://127.0.0.1/session/new]
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 11:46:52) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (0.0ms)
+Completed in 31ms (View: 16, DB: 0) | 200 OK [http://127.0.0.1/sign_up]
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 11:47:10) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"macheist4ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;36;1mUser Exists (281.0ms)[0m   [0;1mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'macheist4ants@gmail.com') LIMIT 1[0m
+  [4;35;1mUser Create (0.0ms)[0m   [0mINSERT INTO "users" ("encrypted_password", "salt", "updated_at", "token", "token_expires_at", "email", "email_confirmed", "created_at") VALUES('28d6eb435e738edd22c560d6ca64f3a69e6be7d8', 'e9c7b13493dca321a8727ac02808c0dc82863bfd', '2009-08-03 10:47:11', 'baf042f479ef924c39b9d78242c2432f68354e97', NULL, 'macheist4ants@gmail.com', 'f', '2009-08-03 10:47:11')[0m
+Sent mail to macheist4ants@gmail.com
+
+From: email2ants@gmail.com
+To: macheist4ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+
+http://127.0.0.1/users/2/confirmation/new?token=baf042f479ef924c39b9d78242c2432f68354e97
+Redirected to http://127.0.0.1:3000/session/new
+Completed in 61141ms (DB: 281) | 302 Found [http://127.0.0.1/users]
+
+
+Processing Clearance::SessionsController#new (for 127.0.0.1 at 2009-08-03 11:48:12) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/sessions"}
+Rendering sessions/new
+Completed in 62ms (View: 62, DB: 0) | 200 OK [http://127.0.0.1/session/new]
+  [4;36;1mUser Load (16.0ms)[0m   [0;1mSELECT * FROM "users" [0m
+  [4;35;1mUser Destroy (0.0ms)[0m   [0mDELETE FROM "users" WHERE "id" = 1[0m
+  [4;36;1mUser Destroy (0.0ms)[0m   [0;1mDELETE FROM "users" WHERE "id" = 2[0m
+
+
+Processing ApplicationController#index (for 127.0.0.1 at 2009-08-03 12:00:58) [GET]
+
+ActionController::RoutingError (No route matches "/session/sign_up" with {:method=>:get}):
+  C:/Ruby/lib/ruby/1.8/webrick/httpserver.rb:104:in `service'
+  C:/Ruby/lib/ruby/1.8/webrick/httpserver.rb:65:in `run'
+  C:/Ruby/lib/ruby/1.8/webrick/server.rb:173:in `start_thread'
+  C:/Ruby/lib/ruby/1.8/webrick/server.rb:162:in `start'
+  C:/Ruby/lib/ruby/1.8/webrick/server.rb:162:in `start_thread'
+  C:/Ruby/lib/ruby/1.8/webrick/server.rb:95:in `start'
+  C:/Ruby/lib/ruby/1.8/webrick/server.rb:92:in `each'
+  C:/Ruby/lib/ruby/1.8/webrick/server.rb:92:in `start'
+  C:/Ruby/lib/ruby/1.8/webrick/server.rb:23:in `start'
+  C:/Ruby/lib/ruby/1.8/webrick/server.rb:82:in `start'
+
+Rendering rescues/layout (not_found)
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 12:01:08) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (16.0ms)
+Completed in 47ms (View: 31, DB: 0) | 200 OK [http://127.0.0.1/sign_up]
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 12:01:21) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;36;1mUser Exists (0.0ms)[0m   [0;1mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+  [4;35;1mUser Create (0.0ms)[0m   [0mINSERT INTO "users" ("encrypted_password", "salt", "updated_at", "token", "token_expires_at", "email", "email_confirmed", "created_at") VALUES('fee6ffec1d6158a3a00d702cc863c313050306bf', '66ad3120dea4fb34ec5fdefcec897d3d479d6c9f', '2009-08-03 11:01:22', '53dea256d0b067c51e3041713adedd7cb0aa12e8', NULL, 'email2ants@gmail.com', 'f', '2009-08-03 11:01:22')[0m
+Sent mail to email2ants@gmail.com
+
+From: email2ants@gmail.com
+To: email2ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+
+http://127.0.0.1/users/3/confirmation/new?token=53dea256d0b067c51e3041713adedd7cb0aa12e8
+Redirected to http://127.0.0.1:3000/session/new
+Completed in 60672ms (DB: 0) | 302 Found [http://127.0.0.1/users]
+
+
+Processing Clearance::SessionsController#new (for 127.0.0.1 at 2009-08-03 12:02:22) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/sessions"}
+Rendering sessions/new
+Completed in 31ms (View: 31, DB: 0) | 200 OK [http://127.0.0.1/session/new]
+  [4;35;1mUser Load (0.0ms)[0m   [0mSELECT * FROM "users" [0m
+  [4;36;1mUser Destroy (16.0ms)[0m   [0;1mDELETE FROM "users" WHERE "id" = 3[0m
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 12:03:08) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (16.0ms)
+Completed in 47ms (View: 16, DB: 0) | 200 OK [http://127.0.0.1/sign_up]
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 12:03:16) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;36;1mUser Exists (0.0ms)[0m   [0;1mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+  [4;35;1mUser Create (0.0ms)[0m   [0mINSERT INTO "users" ("encrypted_password", "salt", "updated_at", "token", "token_expires_at", "email", "email_confirmed", "created_at") VALUES('a2c380ef3516c2ee80342052381dec2e6a5e3811', 'c4a3d98cf8e9bcbab7879103c1423fab0e1721ce', '2009-08-03 11:03:16', '5b16cddefab43a8124f42539e36d209fd5da1ea8', NULL, 'email2ants@gmail.com', 'f', '2009-08-03 11:03:16')[0m
+Sent mail to email2ants@gmail.com
+
+From: email2ants@gmail.com
+To: email2ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+
+http://127.0.0.1/users/4/confirmation/new?token=5b16cddefab43a8124f42539e36d209fd5da1ea8
+Redirected to http://127.0.0.1:3000/session/new
+Completed in 60235ms (DB: 0) | 302 Found [http://127.0.0.1/users]
+
+
+Processing Clearance::SessionsController#new (for 127.0.0.1 at 2009-08-03 12:04:16) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/sessions"}
+Rendering sessions/new
+Completed in 16ms (View: 16, DB: 0) | 200 OK [http://127.0.0.1/session/new]
+  [4;35;1mUser Load (0.0ms)[0m   [0mSELECT * FROM "users" [0m
+  [4;36;1mUser Destroy (0.0ms)[0m   [0;1mDELETE FROM "users" WHERE "id" = 4[0m
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 12:05:13) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (16.0ms)
+Completed in 31ms (View: 31, DB: 0) | 200 OK [http://127.0.0.1/sign_up]
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 12:05:27) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;36;1mUser Exists (0.0ms)[0m   [0;1mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+  [4;35;1mUser Create (0.0ms)[0m   [0mINSERT INTO "users" ("encrypted_password", "salt", "updated_at", "token", "token_expires_at", "email", "email_confirmed", "created_at") VALUES('967fc8d60322e3138c9f1cf7f478f6fa24db3158', 'bac0d9f3d7ccf20e4405ef1e63be08ab58f08615', '2009-08-03 11:05:28', 'd04090d943f49fe5766857cdee7ab4b8ce96233b', NULL, 'email2ants@gmail.com', 'f', '2009-08-03 11:05:28')[0m
+Sent mail to email2ants@gmail.com
+
+From: email2ants@gmail.com
+To: email2ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+
+http://127.0.0.1/users/5/confirmation/new?token=d04090d943f49fe5766857cdee7ab4b8ce96233b
+Redirected to http://127.0.0.1:3000/session/new
+Completed in 60515ms (DB: 0) | 302 Found [http://127.0.0.1/users]
+
+
+Processing Clearance::SessionsController#new (for 127.0.0.1 at 2009-08-03 12:06:28) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/sessions"}
+Rendering sessions/new
+Completed in 31ms (View: 31, DB: 0) | 200 OK [http://127.0.0.1/session/new]
+  [4;35;1mUser Load (0.0ms)[0m   [0mSELECT * FROM "users" [0m
+  [4;36;1mUser Destroy (0.0ms)[0m   [0;1mDELETE FROM "users" WHERE "id" = 5[0m
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 12:11:06) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (16.0ms)
+Completed in 31ms (View: 31, DB: 0) | 200 OK [http://127.0.0.1/sign_up]
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 12:11:21) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;36;1mUser Exists (0.0ms)[0m   [0;1mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+  [4;35;1mUser Create (0.0ms)[0m   [0mINSERT INTO "users" ("encrypted_password", "salt", "updated_at", "token", "token_expires_at", "email", "email_confirmed", "created_at") VALUES('f8018c2802a44dd50f434da28f3dca483f658db4', 'f202236ee5a7be1c7b86cd6b9b0076862ce35606', '2009-08-03 11:11:21', 'ed2950ebfac6b96caf992a8859c65d583df6f771', NULL, 'email2ants@gmail.com', 'f', '2009-08-03 11:11:21')[0m
+Sent mail to email2ants@gmail.com
+
+From: email2ants@gmail.com
+To: email2ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+
+http://127.0.0.1/users/6/confirmation/new?token=ed2950ebfac6b96caf992a8859c65d583df6f771
+
+Timeout::Error (execution expired):
+  c:/Ruby/lib/ruby/1.8/timeout.rb:60:in `rbuf_fill'
+  c:/Ruby/lib/ruby/1.8/net/protocol.rb:132:in `rbuf_fill'
+  c:/Ruby/lib/ruby/1.8/net/protocol.rb:116:in `readuntil'
+  c:/Ruby/lib/ruby/1.8/net/protocol.rb:126:in `readline'
+  c:/Ruby/lib/ruby/1.8/net/smtp.rb:663:in `recv_response'
+  c:/Ruby/lib/ruby/1.8/net/smtp.rb:395:in `do_start'
+  c:/Ruby/lib/ruby/1.8/net/smtp.rb:685:in `critical'
+  c:/Ruby/lib/ruby/1.8/net/smtp.rb:395:in `do_start'
+  c:/Ruby/lib/ruby/gems/1.8/gems/thoughtbot-clearance-0.6.9/app/controllers/clearance/users_controller.rb:15:in `create'
+  c:/Ruby/lib/ruby/1.8/webrick/httpserver.rb:104:in `service'
+  c:/Ruby/lib/ruby/1.8/webrick/httpserver.rb:65:in `run'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:173:in `start_thread'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:162:in `start'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:162:in `start_thread'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:95:in `start'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:92:in `each'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:92:in `start'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:23:in `start'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:82:in `start'
+
+Rendered rescues/_trace (78.0ms)
+Rendered rescues/_request_and_response (0.0ms)
+Rendering rescues/layout (internal_server_error)
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 12:17:47) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (16.0ms)
+Completed in 16ms (View: 16, DB: 0) | 200 OK [http://127.0.0.1/sign_up]
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 12:17:53) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;36;1mUser Exists (0.0ms)[0m   [0;1mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+Rendering users/new
+Rendered users/_form (0.0ms)
+Completed in 32ms (View: 0, DB: 0) | 200 OK [http://127.0.0.1/users]
+  [4;35;1mUser Load (0.0ms)[0m   [0mSELECT * FROM "users" [0m
+  [4;36;1mUser Destroy (0.0ms)[0m   [0;1mDELETE FROM "users" WHERE "id" = 6[0m
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 12:18:04) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;35;1mUser Exists (0.0ms)[0m   [0mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+  [4;36;1mUser Create (0.0ms)[0m   [0;1mINSERT INTO "users" ("encrypted_password", "salt", "updated_at", "token", "token_expires_at", "email", "email_confirmed", "created_at") VALUES('7d126fdd2757e9c5ff73b6d2180eb15e3cb642c1', 'f4cc685b2eaf772d3136171b7d972c75a8389b5b', '2009-08-03 11:18:04', '539c2c9d8b438368850f6d3dc5dae69be46cdf96', NULL, 'email2ants@gmail.com', 'f', '2009-08-03 11:18:04')[0m
+Sent mail to email2ants@gmail.com
+
+From: email2ants@gmail.com
+To: email2ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+
+http://127.0.0.1/users/7/confirmation/new?token=539c2c9d8b438368850f6d3dc5dae69be46cdf96
+
+Timeout::Error (execution expired):
+  c:/Ruby/lib/ruby/1.8/timeout.rb:60:in `rbuf_fill'
+  c:/Ruby/lib/ruby/1.8/net/protocol.rb:132:in `rbuf_fill'
+  c:/Ruby/lib/ruby/1.8/net/protocol.rb:116:in `readuntil'
+  c:/Ruby/lib/ruby/1.8/net/protocol.rb:126:in `readline'
+  c:/Ruby/lib/ruby/1.8/net/smtp.rb:663:in `recv_response'
+  c:/Ruby/lib/ruby/1.8/net/smtp.rb:395:in `do_start'
+  c:/Ruby/lib/ruby/1.8/net/smtp.rb:685:in `critical'
+  c:/Ruby/lib/ruby/1.8/net/smtp.rb:395:in `do_start'
+  c:/Ruby/lib/ruby/gems/1.8/gems/thoughtbot-clearance-0.6.9/app/controllers/clearance/users_controller.rb:15:in `create'
+  c:/Ruby/lib/ruby/1.8/webrick/httpserver.rb:104:in `service'
+  c:/Ruby/lib/ruby/1.8/webrick/httpserver.rb:65:in `run'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:173:in `start_thread'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:162:in `start'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:162:in `start_thread'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:95:in `start'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:92:in `each'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:92:in `start'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:23:in `start'
+  c:/Ruby/lib/ruby/1.8/webrick/server.rb:82:in `start'
+
+Rendered rescues/_trace (234.0ms)
+Rendered rescues/_request_and_response (0.0ms)
+Rendering rescues/layout (internal_server_error)
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 19:28:30) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (0.0ms)
+Completed in 15ms (View: 15, DB: 0) | 200 OK [http://127.0.0.1/sign_up]
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 19:28:32) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (0.0ms)
+Completed in 16ms (View: 16, DB: 0) | 200 OK [http://127.0.0.1/sign_up]
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 19:28:38) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;35;1mUser Exists (0.0ms)[0m   [0mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+Rendering users/new
+Rendered users/_form (0.0ms)
+Completed in 31ms (View: 0, DB: 0) | 200 OK [http://127.0.0.1/users]
+  [4;35;1mUser Load (16.0ms)[0m   [0mSELECT * FROM "users" [0m
+  [4;36;1mUser Destroy (0.0ms)[0m   [0;1mDELETE FROM "users" WHERE "id" = 7[0m
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 19:28:46) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;36;1mUser Exists (0.0ms)[0m   [0;1mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+  [4;35;1mUser Create (0.0ms)[0m   [0mINSERT INTO "users" ("encrypted_password", "salt", "updated_at", "token", "token_expires_at", "email", "email_confirmed", "created_at") VALUES('2ccdc864d88864e2f16d7c3289003ce1d963ba54', '9bf6e097e6762ae2f997716bc6c03089af46edbc', '2009-08-03 18:28:46', '238914b49e9d693d62e70acded95df2f183b3290', NULL, 'email2ants@gmail.com', 'f', '2009-08-03 18:28:46')[0m
+Sent mail to email2ants@gmail.com
+
+From: email2ants@gmail.com
+To: email2ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+
+http://127.0.0.1/users/8/confirmation/new?token=238914b49e9d693d62e70acded95df2f183b3290
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 19:30:16) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (0.0ms)
+Completed in 31ms (View: 16, DB: 0) | 200 OK [http://127.0.0.1/sign_up]
+
+
+Processing Clearance::SessionsController#new (for 127.0.0.1 at 2009-08-03 19:30:16) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/sessions"}
+Rendering sessions/new
+Completed in 0ms (View: 0, DB: 0) | 200 OK [http://127.0.0.1/session/new]
+
+
+Processing Clearance::UsersController#new (for 127.0.0.1 at 2009-08-03 19:30:21) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/users"}
+Rendering users/new
+Rendered users/_form (0.0ms)
+Completed in 15ms (View: 15, DB: 0) | 200 OK [http://127.0.0.1/users/new]
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 19:30:41) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;36;1mUser Exists (0.0ms)[0m   [0;1mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+Rendering users/new
+Rendered users/_form (0.0ms)
+Completed in 547ms (View: 0, DB: 0) | 200 OK [http://127.0.0.1/users]
+  [4;35;1mUser Load (0.0ms)[0m   [0mSELECT * FROM "users" [0m
+  [4;36;1mUser Destroy (0.0ms)[0m   [0;1mDELETE FROM "users" WHERE "id" = 8[0m
+
+
+Processing Clearance::UsersController#create (for 127.0.0.1 at 2009-08-03 19:30:50) [POST]
+  Parameters: {"user"=>{"password_confirmation"=>"[FILTERED]", "password"=>"[FILTERED]", "email"=>"email2ants@gmail.com"}, "commit"=>"Sign up", "action"=>"create", "authenticity_token"=>"5mtwFiSYjXBwObOLjp/JzAQfseZvKIuVXHDAnzVwFcg=", "controller"=>"clearance/users"}
+  [4;35;1mUser Exists (0.0ms)[0m   [0mSELECT "users".id FROM "users" WHERE (LOWER("users"."email") = 'email2ants@gmail.com') LIMIT 1[0m
+  [4;36;1mUser Create (0.0ms)[0m   [0;1mINSERT INTO "users" ("encrypted_password", "salt", "updated_at", "token", "token_expires_at", "email", "email_confirmed", "created_at") VALUES('b53877ba7f0318587cd2d2b1b9ce843d6744b4d4', '8b9b2dbd7c9e1825ab6dc46a020546574cf037cf', '2009-08-03 18:30:50', '2ea00cf06aab1c98613e75d70888f403cbffefbf', NULL, 'email2ants@gmail.com', 'f', '2009-08-03 18:30:50')[0m
+Sent mail to email2ants@gmail.com
+
+From: email2ants@gmail.com
+To: email2ants@gmail.com
+Subject: Account confirmation
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+
+http://127.0.0.1/users/9/confirmation/new?token=2ea00cf06aab1c98613e75d70888f403cbffefbf
+Redirected to http://127.0.0.1:3000/session/new
+Completed in 60265ms (DB: 0) | 302 Found [http://127.0.0.1/users]
+
+
+Processing Clearance::SessionsController#new (for 127.0.0.1 at 2009-08-03 19:31:50) [GET]
+  Parameters: {"action"=>"new", "controller"=>"clearance/sessions"}
+Rendering sessions/new
+Completed in 15ms (View: 0, DB: 0) | 200 OK [http://127.0.0.1/session/new]
